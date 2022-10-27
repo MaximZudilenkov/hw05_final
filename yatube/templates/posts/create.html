@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load user_filters %}
+{% block title %}
+{% if request.resolver_match.view_name  == 'posts:post_create' %}
+<title>
+  Доабвление поста
+</title>
+{% else %}
+<title>
+  Редактирование поста
+</title>
+{% endif %}
+{% endblock %}
+{% include 'includes/header.html' %}
+{% block content %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 p-5">
+        <div class="card">
+          <div class="card-header">
+            Новый пост
+          </div>
+          <form method="post"  enctype="multipart/form-data">
+            <div class="card-body">
+              <div class="form-group row my-3 p-3">
+                <label for="id_text">
+                Текст поста
+                <span class="required text-danger" >*</span>
+                </label>
+                {{form.text|addclass:'form-control' }}
+                <small id="id_text-help" class="form-text text-muted">
+                Текст нового поста
+                </small>
+              </div>
+              <div class="form-group row my-3 p-3">
+                <label for="id_group">
+                Группа
+                </label>
+                {{form.group|addclass:'form-control' }}
+                <small id="id_group-help" class="form-text text-muted">
+                Группа, к которой будет относиться пост
+                </small>
+              </div>
+              <div class="form-group row my-3 p-3">
+                    <label for="id_image">
+                      Картинка
+                    </label>
+                {{form.image|addclass:'form-control' }}
+                  </div>
+                  <div class="d-flex justify-content-end">
+              {{form.author}}
+              {% if request.resolver_match.view_name  == 'posts:post_create' %}
+              {{is_edit}}
+              <input type="submit" value="Добавить">
+              {% else %}
+              <input type="submit" value="Сохранить">
+              {% endif %}
+            </div>
+            {% csrf_token %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+{% endblock %}

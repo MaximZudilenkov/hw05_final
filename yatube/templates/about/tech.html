@@ -1,0 +1,46 @@
+<!-- templates/about/tech.html -->
+{% extends "base.html" %}
+{% block title %}
+<title>Технологии</title>
+{% endblock %}
+{% block content %}
+{% comment %} Колонки с отступом сверху и снизу {% endcomment %}
+<div class="row">
+  <h1>Вот что я умею</h1>
+  {% comment %}
+  Боковой блок со списком технологий
+  Займет всю ширину блока на мобильном
+  и 25% при размерах экрана ≥768px
+  {% endcomment %}
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+      </li>
+    </ul>
+  </aside>
+  {% comment %}
+  Статья
+  Займет всю ширину блока на мобильном
+  и 75% при размерах экрана ≥768px
+  {% endcomment %}
+  <article class="col-12 col-md-9">
+    <p>Для создания данной страницы мне помогли уроки в Яндекс Практикуме по следующим темам:
+    <li >
+      Основы Python
+    </li>
+    <li >
+      Django
+    </li>
+    <li >
+      Структура HTML документа
+    </li>
+    <li >
+      URLs и Views
+    </li>
+    <li >
+      Статичные страницы и класс TemplateView
+    </li>
+    </p>
+  </article>
+</div>
+{% endblock %}
