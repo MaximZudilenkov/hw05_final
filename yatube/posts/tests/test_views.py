@@ -71,11 +71,12 @@ class PostPagesTests(TestCase):
             first_object = response.context[post][0]
         else:
             first_object = response.context[post]
-        return (self.assertEqual(first_object.text, self.post.text),
-                self.assertEqual(first_object.author,
-                                 self.user),
-                self.assertEqual(first_object.group, self.group)), \
-            self.assertEqual(first_object.image, self.post.image)
+        return (
+            self.assertEqual(
+                first_object.text, self.post.text), self.assertEqual(
+                first_object.author, self.user), self.assertEqual(
+                first_object.group, self.group)), self.assertEqual(
+                    first_object.image, self.post.image)
 
     def check_group_in_posts(self, url, **kwargs):
         """Метод, проверяющий группу у постов в шаблонах"""
