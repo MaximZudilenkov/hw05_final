@@ -115,8 +115,11 @@ def post_edit(request, post_id):
 
 @login_required
 def follow_index(request):
-    authors = [post.author for post in request.user.follower.all()]
-    posts = Post.objects.filter(author__in=authors)
+    posts = (
+        Post.objects.filter(
+            author__following__user=request.user
+        )
+    )
     paginator = Paginator(posts, posts_in_page)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
