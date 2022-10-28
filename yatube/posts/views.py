@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
@@ -34,8 +33,8 @@ def group_list(request, slug):
 def profile(request, username):
     author = User.objects.get(username=username)
     if request.user.is_authenticated:
-        following = author in [
-            post.author for post in request.user.follower.all()]
+        following = Follow.objects.filter(
+            user=request.user, author=author).exists()
     else:
         following = None
     posts_from_author = author.posts.all()
@@ -127,22 +126,21 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    if request.user == User.objects.get(
-        username=username) or Follow.objects.filter(
-        author=User.objects.get(
-            username=username)).exists():
+    user = get_object_or_404(User,
+                             username=username)
+    if request.user == user or Follow.objects.filter(
+            author=user).exists():
         return redirect('posts:index')
     else:
-        Follow.objects.update_or_create(
+        Follow.objects.create(
             user=request.user,
-            author=User.objects.get(
-                username=username))
+            author=user)
     return redirect('posts:follow_index')
 
 
 @login_required
 def profile_unfollow(request, username):
-    Follow.objects.get(
+    Follow.objects.filter(
         user=request.user,
         author=User.objects.get(
             username=username)).delete()

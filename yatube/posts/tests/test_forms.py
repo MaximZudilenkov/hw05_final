@@ -75,6 +75,7 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.count(), post_count + 1)
         self.assertEqual(test_post.text, form_data['text'])
         self.assertEqual(test_post.group.title, self.group.title)
+        self.assertEqual(test_post.image.size, uploaded.size)
 
     def test_edit_post(self):
         post_count = Post.objects.count()

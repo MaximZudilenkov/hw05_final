@@ -1,4 +1,3 @@
-from http import HTTPStatus
 
 from django import forms
 from django.core.cache import cache
@@ -44,7 +43,7 @@ class PostPagesTests(TestCase):
         )
 
         cls.follow = Follow.objects.create(
-            user=cls.another_user,
+            user=cls.not_author_user,
             author=cls.user
         )
 
@@ -76,7 +75,7 @@ class PostPagesTests(TestCase):
                 first_object.text, self.post.text), self.assertEqual(
                 first_object.author, self.user), self.assertEqual(
                 first_object.group, self.group)), self.assertEqual(
-                    first_object.image, self.post.image)
+            first_object.image, self.post.image)
 
     def check_group_in_posts(self, url, **kwargs):
         """Метод, проверяющий группу у постов в шаблонах"""
@@ -182,29 +181,32 @@ class PostPagesTests(TestCase):
 
     def test_cache_at_index_page(self):
         cache.clear()
-        response_old = self.guest_client.get('/')
+        response_old = self.guest_client.get(reverse('posts:index'))
         Post.objects.create(
             author=self.user,
             text='Кеш пост ')
-        response_new = self.guest_client.get('/')
+        response_new = self.guest_client.get(reverse('posts:index'))
         self.assertEqual(response_old.content, response_new.content)
+        cache.clear()
+        response_new = self.guest_client.get(reverse('posts:index'))
+        self.assertNotEqual(response_old.content, response_new.content)
 
     def test_profile_follow(self):
+        self.assertEqual(Follow.objects.first(), self.follow)
 
-        Follow.objects.create(
-            user=self.another_user,
-            author=self.user
-        )
-        response = self.authorized_author_client.post(
-            reverse(
-                'posts:profile_follow', kwargs={
-                    'username': self.user.username}))
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+    def test_profile_unfollow(self):
+        follow = Follow.objects.filter(
+            user=self.not_author_user, author=self.user)
+        self.assertTrue(follow.exists())
+        (self.authorized_client.get
+         (reverse('posts:profile_unfollow',
+                  kwargs={'username': self.user.username})))
+        self.assertFalse(follow.exists())
 
     def test_context_for_followers_and_not_followers(self):
-        response_follower = self.authorized_another_user_client.get(
+        response_follower = self.authorized_client.get(
             reverse('posts:follow_index'))
-        response_not_follower = self.authorized_client.get(
+        response_not_follower = self.authorized_another_user_client.get(
             reverse('posts:follow_index'))
         self.assertIn(self.post,
                       response_follower.context['page_obj'].object_list)

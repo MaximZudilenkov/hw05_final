@@ -1,11 +1,11 @@
-<!-- templates/posts/includes/switcher.html -->
+{% load static %}
 
 {% if user.is_authenticated %}
   <div class="row my-3">
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <a
-          class="nav-link {% if index %}active{% endif %}"
+           class="nav-link {% if 'posts:index' %}active{% endif %}"
           href="{% url 'posts:index' %}"
         >
           Все авторы
@@ -13,7 +13,7 @@
       </li>
       <li class="nav-item">
         <a
-           class="nav-link {% if follow %}active{% endif %}"
+           class="nav-link {% if 'posts:follow_index' %}active{% endif %}"
            href="{% url 'posts:follow_index' %}"
         >
           Избранные авторы
@@ -21,4 +21,5 @@
       </li>
     </ul>
   </div>
+
 {% endif %}
