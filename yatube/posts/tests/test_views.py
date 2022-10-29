@@ -192,7 +192,15 @@ class PostPagesTests(TestCase):
         self.assertNotEqual(response_old.content, response_new.content)
 
     def test_profile_follow(self):
-        self.assertEqual(Follow.objects.first(), self.follow)
+        follow = Follow.objects.filter(
+            user=self.not_author_user, author=self.user)
+        self.assertTrue(follow.exists())
+        follow.delete()
+        self.assertFalse(follow.exists())
+        (self.authorized_client.get
+         (reverse('posts:profile_follow',
+                  kwargs={'username': self.user.username})))
+        self.assertTrue(follow.exists())
 
     def test_profile_unfollow(self):
         follow = Follow.objects.filter(
